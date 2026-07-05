@@ -56,6 +56,7 @@ app.post("/todos", async (req, res) => {
       todo: response.rows[0],
     });
   } catch (err) {
+    // Error handling for database errors
     console.error("Database error:", err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
