@@ -1,4 +1,4 @@
-name: Run lint tests
+name: Run tests
 
 on:
   push:
@@ -17,5 +17,5 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "18"
-      - name: Check linting
-        run: npm i && npm run lint
+      - name: Run tests
+        run: npm run test
