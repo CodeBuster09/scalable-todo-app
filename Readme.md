@@ -164,3 +164,74 @@ docker compose logs -f
 - [ ] Rate limiting with Redis
 - [ ] CI/CD pipeline (GitHub Actions → EC2)
 - [ ] Production Nginx reverse proxy
+
+☁️ **Self Hosting (EC2 Deployment)**
+
+This project can be deployed to an AWS EC2 instance using GitHub Actions CI/CD.
+
+🔐 Required GitHub Secrets
+
+Before deploying, add the following secrets in your GitHub repository:
+
+Go to:
+GitHub Repo → Settings → Secrets and variables → Actions → New repository secret
+
+Add:
+
+1. EC2_HOST
+
+Public IP or DNS of your EC2 instance
+
+EC2_HOST=13.xx.xx.xx
+2. EC2_USER
+
+Default SSH username for your EC2 instance
+
+Common values:
+
+ubuntu (Ubuntu EC2)
+ec2-user (Amazon Linux)
+EC2_USER=ubuntu
+3. EC2_SSH_KEY
+
+Your private SSH key (PEM file content)
+
+⚠️ Important:
+
+Copy the entire private key
+
+Including:
+
+-----BEGIN OPENSSH PRIVATE KEY-----
+...
+-----END OPENSSH PRIVATE KEY-----
+🚀 How Deployment Works
+
+On every push to main branch:
+
+GitHub Actions connects to EC2 via SSH
+Pulls latest code from GitHub
+Builds and starts Docker containers
+⚙️ EC2 Requirements (One-time setup)
+
+Make sure your EC2 instance has:
+
+Install Docker
+sudo apt update -y
+sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker
+Install Docker Compose plugin
+sudo apt install -y docker-compose-plugin
+Add user to docker group
+sudo usermod -aG docker ubuntu
+newgrp docker
+📦 Deploy Command (runs via GitHub Actions)
+docker compose down || true
+docker compose up -d --build
+⚠️ Important Notes
+Ensure EC2 security group allows:
+22 (SSH)
+3000 (App access)
+Use docker compose (NOT docker-compose)
+.env file must exist on EC2 or be injected via secrets
