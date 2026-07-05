@@ -62,6 +62,31 @@ app.post("/todos", async (req, res) => {
   }
 });
 
+app.delete("/todos/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await redisClient.del("todos");
+
+    const response = await pool.query(
+      `DELETE FROM todos WHERE id = $1 RETURNING *`,
+      [id],
+    );
+
+    if (response.rowCount === 0) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    return res.json({
+      message: "Todo deleted successfully",
+      deletedTodo: response.rows[0],
+    });
+  } catch (err) {
+    console.error("Error deleting todo:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
 });
