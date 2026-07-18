@@ -5,13 +5,40 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const app = express();
+export const app = express();
 
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+app.post("/cal", (req, res) => {
+  const op = req.body.op;
+  const a = req.body.a;
+  const b = req.body.b;
+  if(op == '+') {
+    res.json({
+      add: a+b
+    })
+  } else if (op == '-') {
+    res.json({
+      sub: a-b
+    })
+  } else if (op == '*') {
+    res.json({
+      mult: a*b
+    })
+  } else {
+    if(b!=0)
+      res.json({ div: a/b});
+    else if(a!=0) 
+      res.json({div: b/a});
+    else {
+      res.json({err:"error"})
+    }
+  }
+})
 
 app.get("/todos", async (req, res) => {
   try {
